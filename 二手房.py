@@ -55,6 +55,7 @@ def get_house_info(url):
 url_base = 'https://cq.ke.com/ershoufang/dadukou/'
 url_para = 'sf1y1l1l2l3/'
 
+# 获取每页房源信息
 for i in range(1, total_pages + 1):
     url = url_base + 'pg' + str(i) + url_para
     print('page:{}'.format(i))

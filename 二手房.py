@@ -122,20 +122,17 @@ def get_house_info(url):
     return house_info_list
 
 
-# 请求头
-headers = {
-    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-    'Origin': "https://cq.ke.com/",
-    'Referer': "https://cq.ke.com/",
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
-                  'AppleWebKit/537.36 (KHTML, like Gecko) '
-                  'Chrome/91.0.4472.106 '
-                  'Safari/537.36',
-}
-
-
-
 if __name__ == '__main__':
+    # 请求头
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'Origin': "https://cq.ke.com/",
+        'Referer': "https://cq.ke.com/",
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/91.0.4472.106 '
+                      'Safari/537.36',
+    }
     url_base = 'https://cq.ke.com/ershoufang/'  # 基本链接
     url_place = 'jiangbei'  # 查询地点
     url_para = 'sf1y1l1l2l3/'  # 参数配置
@@ -158,8 +155,10 @@ if __name__ == '__main__':
 
     # 保存到本地
     df = pd.DataFrame.from_records(info_list)
-    order = ['标题', '所在区域', '小区', '建成时间', '总价（万）', '单价（元/平）', '建筑面积（平米）', '套内面积（平米）', '朝向',
-             '楼层', '户型', '户型结构', '户型图', '建筑类型', '建筑结构', '装修情况', '配备电梯', '梯户比例', '挂牌时间',
+    order = ['标题', '所在区域', '小区', '建成时间', '总价（万）', '单价（元/平）', '建筑面积（平米）', '套内面积（平米）',
+             '朝向',
+             '楼层', '户型', '户型结构', '户型图', '建筑类型', '建筑结构', '装修情况', '配备电梯', '梯户比例',
+             '挂牌时间',
              '上次交易', '房屋用途', '房屋年限', '交易权属', '产权所属']
     df = df[order]
     df.to_excel('./{}二手房源-{}.xlsx'.format(url_place, time.strftime('%Y-%m-%d', time.localtime())), index=False)

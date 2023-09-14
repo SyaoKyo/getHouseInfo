@@ -30,7 +30,7 @@ def get_house_info(url):
         house_info_dict = {}
         # 获取标题
         title = house_info.find('div', class_='title')
-        house_info_dict['标题'] = title.get_text().replace('\n', '').replace(' ', '')
+        house_info_dict['标题'] = title.get_text().replace('\n', '').replace(' ', '').replace('/', '、')
         # 获取价格
         price_info = house_info.find('div', class_='priceInfo').get_text().replace('\n', '').replace(' ', '').split(
             '万')
@@ -137,7 +137,7 @@ headers = {
 
 if __name__ == '__main__':
     url_base = 'https://cq.ke.com/ershoufang/'  # 基本链接
-    url_place = 'jiulongpo'  # 查询地点
+    url_place = 'jiangbei'  # 查询地点
     url_para = 'sf1y1l1l2l3/'  # 参数配置
     # sf1 : 普通住宅
     # y1 : 5年以内

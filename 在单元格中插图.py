@@ -2,7 +2,7 @@ import openpyxl
 from openpyxl.drawing.image import Image
 import os
 
-place = 'jiulongpo'
+place = 'jiangbei'
 excel_file_path = './{}二手房源-2023-09-14.xlsx'.format(place)
 image_name_column = 'A'
 image_column = 'M'

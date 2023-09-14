@@ -9,20 +9,6 @@ import requests
 import pandas as pd
 from openpyxl.drawing.image import Image
 
-# 请求头
-headers = {
-    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-    'Origin': "https://cq.ke.com/",
-    'Referer': "https://cq.ke.com/",
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
-                  'AppleWebKit/537.36 (KHTML, like Gecko) '
-                  'Chrome/91.0.4472.106 '
-                  'Safari/537.36',
-}
-# 创建图片缓存文件夹
-img_dir = './img/'
-os.makedirs(img_dir, exist_ok=True)
-
 
 #  获取总页数
 def get_total_page(url):
@@ -129,7 +115,6 @@ def get_house_info(url):
 
         # 留空位方便后续插图
         house_info_dict['户型图'] = img_dir + house_info_dict['标题'] + '.jpg'
-        # print(img)
 
         house_info_list.append(house_info_dict)
         # print(house_info_dict)
@@ -137,25 +122,44 @@ def get_house_info(url):
     return house_info_list
 
 
-url_base = 'https://cq.ke.com/ershoufang/'  # 基本链接
-url_place = 'dadukou'  # 查询地点
-url_para = 'sf1y1l1l2l3/'  # 参数配置
-# sf1 : 普通住宅
-# y1 : 5年以内
-# l1 : 1室，l2 : 2室，l3 : 3室
-total_pages = get_total_page(url=url_base + url_place + '/' + url_para)
+# 请求头
+headers = {
+    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+    'Origin': "https://cq.ke.com/",
+    'Referer': "https://cq.ke.com/",
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
+                  'AppleWebKit/537.36 (KHTML, like Gecko) '
+                  'Chrome/91.0.4472.106 '
+                  'Safari/537.36',
+}
 
-# 获取每页房源信息
-info_list = []
-for i in range(1, total_pages + 1):
-    url = url_base + url_place + '/pg' + str(i) + url_para
-    print('page/total pages : {}/{}'.format(i, total_pages))
-    info_list.extend(get_house_info(url))
 
-# 保存到本地
-df = pd.DataFrame.from_records(info_list)
-order = ['标题', '所在区域', '小区', '建成时间', '总价（万）', '单价（元/平）', '建筑面积（平米）', '套内面积（平米）', '朝向',
-         '楼层', '户型', '户型结构', '户型图', '建筑类型', '建筑结构', '装修情况', '配备电梯', '梯户比例', '挂牌时间',
-         '上次交易', '房屋用途', '房屋年限', '交易权属', '产权所属']
-df = df[order]
-df.to_excel('./{}二手房源-{}.xlsx'.format(url_place, time.strftime('%Y-%m-%d', time.localtime())), index=False)
+
+if __name__ == '__main__':
+    url_base = 'https://cq.ke.com/ershoufang/'  # 基本链接
+    url_place = 'jiulongpo'  # 查询地点
+    url_para = 'sf1y1l1l2l3/'  # 参数配置
+    # sf1 : 普通住宅
+    # y1 : 5年以内
+    # l1 : 1室，l2 : 2室，l3 : 3室
+
+    # 创建图片缓存文件夹
+    img_dir = './{}_img/'.format(url_place)
+    os.makedirs(img_dir, exist_ok=True)
+
+    total_pages = get_total_page(url=url_base + url_place + '/' + url_para)
+
+    # 获取每页房源信息
+    info_list = []
+    for i in range(1, total_pages + 1):
+        url = url_base + url_place + '/pg' + str(i) + url_para
+        print('page/total pages : {}/{}'.format(i, total_pages))
+        info_list.extend(get_house_info(url))
+
+    # 保存到本地
+    df = pd.DataFrame.from_records(info_list)
+    order = ['标题', '所在区域', '小区', '建成时间', '总价（万）', '单价（元/平）', '建筑面积（平米）', '套内面积（平米）', '朝向',
+             '楼层', '户型', '户型结构', '户型图', '建筑类型', '建筑结构', '装修情况', '配备电梯', '梯户比例', '挂牌时间',
+             '上次交易', '房屋用途', '房屋年限', '交易权属', '产权所属']
+    df = df[order]
+    df.to_excel('./{}二手房源-{}.xlsx'.format(url_place, time.strftime('%Y-%m-%d', time.localtime())), index=False)

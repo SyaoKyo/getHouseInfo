@@ -2,10 +2,11 @@ import openpyxl
 from openpyxl.drawing.image import Image
 import os
 
-excel_file_path = './dadukou二手房源-2023-09-14.xlsx'
+place = 'jiulongpo'
+excel_file_path = './{}二手房源-2023-09-14.xlsx'.format(place)
 image_name_column = 'A'
 image_column = 'M'
-image_path = './dadukou_img/'
+image_path = './{}_img/'.format(place)
 
 wb = openpyxl.load_workbook(excel_file_path)  # 打开excel工作簿
 ws = wb.active  # 获取活跃工作表

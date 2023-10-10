@@ -82,9 +82,9 @@ def get_house_info(url):
         house_info_dict['抵押信息'] = detailed_info[14].replace('抵押信息', '')
         house_info_dict['房本备件'] = detailed_info[12].replace('房本备件', '')
 
-        area_info = res_fang_soup.find('div', class_='areaName').get_text().replace('所在区域', '').replace('\n',
-                                                                                                            '').replace(
-            '\xa0', '').replace(' ', '')
+        area_info = (res_fang_soup.find('div', class_='areaName')
+                     .get_text().replace('所在区域', '')
+                     .replace('\n', '').replace('\xa0', '').replace(' ', ''))
         house_info_dict['所在区域'] = area_info
         # 下载图片
         try:
@@ -136,9 +136,11 @@ if __name__ == '__main__':
     url_base = 'https://cq.ke.com/ershoufang/'  # 基本链接
     url_place = 'jiangbei'  # 查询地点
     url_para = 'sf1y1l1l2l3/'  # 参数配置
-    # sf1 : 普通住宅
-    # y1 : 5年以内
-    # l1 : 1室，l2 : 2室，l3 : 3室
+    # 查询参数对应的内容：
+    # sf1:普通住宅
+    # y1:5年以内,  y2:10年以内,   y3:15年以内,   y4:20年以内
+    # l1:1室,     l2:2室,       l3:3室
+    # lc1:低楼层,  lc2:中楼层,   lc3:高楼层
 
     # 创建图片缓存文件夹
     img_dir = './{}_img/'.format(url_place)

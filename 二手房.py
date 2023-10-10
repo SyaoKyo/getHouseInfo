@@ -2,12 +2,10 @@ import json
 import os
 import re
 import time
-from io import BytesIO
 from urllib import request
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
-from openpyxl.drawing.image import Image
 
 
 #  获取总页数

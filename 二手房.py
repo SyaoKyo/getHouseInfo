@@ -85,35 +85,41 @@ def get_house_info(url):
                      .replace('\n', '').replace('\xa0', '').replace(' ', ''))
         house_info_dict['所在区域'] = area_info
         # 下载图片
+        img = None  # 原户型图
+        img_cut = None  # 裁剪的户型图
+        img_err = None  # 无户型图
         try:
-            img = res_fang_soup.find('img', alt=re.compile('-户型图')).get('src')
-            img_w = img[img.find('w_') + 2:img.find('h_') - 1]
-            img_h = img[img.find('h_') + 2:img.find('l_') - 1]
-            img_url = img.replace(img_h, str(int(img_h) * 2)).replace(img_w, str(int(img_w) * 2))
+            # 获取原图
+            img = res_fang_soup.find('div', class_='imgdiv').get('data-img')
         except:
-            # 无户型图，用其他图片代替
-            print('\n该房源无户型图：{}'.format(house_info_dict['标题']))
-            img_url = 'https://s1.ljcdn.com/pegasus/redskull/images/common/default_house_detail.png?_v=20230816111335'
-        # print(img_url)
+            try:
+                # 无原图，使用裁剪的户型图
+                img_cut = res_fang_soup.find('img', alt=re.compile('-户型图')).get('src')
+                img_w = img_cut[img_cut.find('w_') + 2:img_cut.find('h_') - 1]
+                img_h = img_cut[img_cut.find('h_') + 2:img_cut.find('l_') - 1]
+                img_cut = img_cut.replace(img_h, str(int(img_h) * 2)).replace(img_w, str(int(img_w) * 2))
+            except:
+                # 无户型图，用其他图片代替
+                print('\n该房源无户型图：{}'.format(house_info_dict['标题']))
+                img_err = 'https://s1.ljcdn.com/pegasus/redskull/images/common/default_house_detail.png?_v=20230816111335'
+
         # 防止重名，误用户型图
         while os.path.exists(img_dir + house_info_dict['标题'] + '.jpg'):
             print('\n该房源户型图已存在：{}'.format(house_info_dict['标题']))
             house_info_dict['标题'] += '1'
 
         with open(img_dir + house_info_dict['标题'] + '.jpg', 'wb') as f:
-            try:
-                res = request.urlopen(img_url)
-            except:
-                print('\n该房源户型图分辨率有误：{}'.format(house_info_dict['标题']))
+            if img is not None:
                 res = request.urlopen(img)
-                pass
-
+            elif img_cut is not None:
+                res = request.urlopen(img_cut)
+            else:
+                res = request.urlopen(img_err)
             f.write(res.read())
             f.close()
 
         # 留空位方便后续插图
         house_info_dict['户型图'] = img_dir + house_info_dict['标题'] + '.jpg'
-
         house_info_list.append(house_info_dict)
         # print(house_info_dict)
     print()
@@ -132,8 +138,8 @@ if __name__ == '__main__':
                       'Safari/537.36',
     }
     url_base = 'https://cq.ke.com/ershoufang/'  # 基本链接
-    url_place = 'jiangbei'  # 查询地点
-    url_para = 'sf1y1l1l2l3/'  # 参数配置
+    url_place = 'dadukou'  # 查询地点
+    url_para = 'sf1y3l1l2l3/'  # 参数配置
     # 查询参数对应的内容：
     # sf1:普通住宅
     # y1:5年以内,  y2:10年以内,   y3:15年以内,   y4:20年以内

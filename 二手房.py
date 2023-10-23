@@ -87,7 +87,7 @@ def get_house_info(url):
         # 下载图片
         img = None  # 原户型图
         img_cut = None  # 裁剪的户型图
-        img_err = None  # 无户型图
+        img_err = 'https://s1.ljcdn.com/pegasus/redskull/images/common/default_house_detail.png?_v=20230816111335'  # 无户型图
         try:
             # 获取原图
             img = res_fang_soup.find('div', class_='imgdiv').get('data-img')
@@ -101,20 +101,30 @@ def get_house_info(url):
             except:
                 # 无户型图，用其他图片代替
                 print('\n该房源无户型图：{}'.format(house_info_dict['标题']))
-                img_err = 'https://s1.ljcdn.com/pegasus/redskull/images/common/default_house_detail.png?_v=20230816111335'
 
+        # print(img_url)
         # 防止重名，误用户型图
         while os.path.exists(img_dir + house_info_dict['标题'] + '.jpg'):
             print('\n该房源户型图已存在：{}'.format(house_info_dict['标题']))
             house_info_dict['标题'] += '1'
 
         with open(img_dir + house_info_dict['标题'] + '.jpg', 'wb') as f:
-            if img is not None:
-                res = request.urlopen(img)
-            elif img_cut is not None:
-                res = request.urlopen(img_cut)
-            else:
-                res = request.urlopen(img_err)
+            res = request.urlopen(img_err)
+            try:
+                if img is not None:
+                    res = request.urlopen(img)
+            except:
+                try:
+                    if img_cut is not None:
+                        res = request.urlopen(img_cut)
+                except:
+                    res = request.urlopen(img_err)
+            # try:
+            #     res = request.urlopen(img)
+            # except:
+            #     print('\n该房源户型图分辨率有误：{}'.format(house_info_dict['标题']))
+            #     res = request.urlopen(img)
+            #     pass
             f.write(res.read())
             f.close()
 
